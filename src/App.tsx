@@ -19,6 +19,13 @@ import { AdminSettings } from '@/pages/admin/AdminSettings';
 import { Loader2 } from 'lucide-react';
 
 function parsePath(pathname: string): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+  if (base && pathname.startsWith(base)) {
+    const path = pathname.slice(base.length);
+    return path || '/';
+  }
+
   return pathname || '/';
 }
 
@@ -34,7 +41,10 @@ function AppContent() {
 
   const navigate = (newPath: string) => {
     if (newPath !== path) {
-      window.history.pushState({}, '', newPath);
+      const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+      const url = `${base}${newPath === '/' ? '/' : newPath}`;
+
+      window.history.pushState({}, '', url);
       setPath(newPath);
     }
   };
