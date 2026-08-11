@@ -1,7 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 import { HeroSlider } from '@/components/HeroSlider';
 import { ProductCard } from '@/components/ProductCard';
-import { useSaleProducts, useFeaturedProducts, useEvents, useSiteSettings } from '@/lib/hooks';
+import { useSaleProducts, useFeaturedProducts, useEvents, useSiteSettings, useCategories } from '@/lib/hooks';
 import { getPublicUrl } from '@/lib/supabase';
 import { formatDate } from '@/lib/format';
 
@@ -10,17 +10,19 @@ interface HomePageProps {
 }
 
 const cities = ['Jakarta', 'Bekasi', 'Bandung', 'Surabaya', 'Medan', 'Bali', 'Tangerang', 'Depok', 'Bogor', 'Yogyakarta', 'Semarang', 'Lampung', 'Makasar', 'Palembang', 'Aceh', 'Lombok'];
-const items = ['Plain Squere'];
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const { products: saleProducts } = useSaleProducts();
   const { products: featuredProducts } = useFeaturedProducts();
   const { events } = useEvents();
   const { settings } = useSiteSettings();
+  const { categories } = useCategories();
+
+  const items = categories.map((c) => c.name);
 
   const tickerPairs = Array.from({ length: 12 }, (_, i) => ({
     city: cities[i % cities.length],
-    item: items[i % items.length],
+    item: items.length > 0 ? items[i % items.length] : 'Kerudung / Hijab',
   }));
 
   return (
