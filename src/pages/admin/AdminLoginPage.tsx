@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Lock, Mail, ArrowLeft, Loader2 } from 'lucide-react';
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-context';
 
 interface AdminLoginPageProps {
   onNavigate: (path: string) => void;

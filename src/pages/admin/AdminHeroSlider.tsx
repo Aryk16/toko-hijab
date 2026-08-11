@@ -13,19 +13,25 @@ export function AdminHeroSlider() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  async function load() {
-    const { data } = await supabase.from('site_settings').select('hero_slides').eq('id', 1).maybeSingle();
-    if (data?.hero_slides) {
-      setHeroSlides(
-        data.hero_slides.map((slide: Partial<HeroSlide>) => ({
-          title: slide.title ?? '',
-          image_path: slide.image_path ?? slide.desktop_image_path ?? slide.mobile_image_path ?? null,
-          desktop_image_path: slide.desktop_image_path ?? slide.image_path ?? null,
-          mobile_image_path: slide.mobile_image_path ?? slide.image_path ?? null,
-        })),
-      );
-    }
-    setLoading(false);
+  function load() {
+    supabase
+      .from('site_settings')
+      .select('hero_slides')
+      .eq('id', 1)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data?.hero_slides) {
+          setHeroSlides(
+            data.hero_slides.map((slide: Partial<HeroSlide>) => ({
+              title: slide.title ?? '',
+              image_path: slide.image_path ?? slide.desktop_image_path ?? slide.mobile_image_path ?? null,
+              desktop_image_path: slide.desktop_image_path ?? slide.image_path ?? null,
+              mobile_image_path: slide.mobile_image_path ?? slide.image_path ?? null,
+            })),
+          );
+        }
+        setLoading(false);
+      });
   }
 
   useEffect(() => {

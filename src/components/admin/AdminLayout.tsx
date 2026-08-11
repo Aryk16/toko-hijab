@@ -11,7 +11,7 @@ import {
   X,
   Store,
 } from 'lucide-react';
-import { useAuth } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-context';
 
 interface AdminLayoutProps {
   children: ReactNode;

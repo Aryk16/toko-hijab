@@ -107,22 +107,24 @@ export function useProduct(id: string | undefined) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
+    if (!id) return;
+    let ignore = false;
     supabase
       .from('products')
       .select('*')
       .eq('id', id)
       .maybeSingle()
       .then(({ data, error }) => {
+        if (ignore) return;
         if (!error && data) setProduct(data);
         setLoading(false);
       });
+    return () => {
+      ignore = true;
+    };
   }, [id]);
 
-  return { product, loading };
+  return { product, loading: loading && !!id };
 }
 
 export function useEvents() {

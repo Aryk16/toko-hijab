@@ -11,10 +11,15 @@ export function AdminCategories() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
 
-  async function load() {
-    const { data } = await supabase.from('categories').select('*').order('sort_order', { ascending: true });
-    if (data) setCategories(data);
-    setLoading(false);
+  function load() {
+    supabase
+      .from('categories')
+      .select('*')
+      .order('sort_order', { ascending: true })
+      .then(({ data }) => {
+        if (data) setCategories(data);
+        setLoading(false);
+      });
   }
 
   useEffect(() => {

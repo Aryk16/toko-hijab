@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ShoppingBag, ArrowLeft, ExternalLink, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useProduct, useCategories, useSiteSettings } from '@/lib/hooks';
 import { getPublicUrl } from '@/lib/supabase';
@@ -13,7 +13,12 @@ export function ProductDetailPage({ id, onNavigate }: ProductDetailPageProps) {
   const { product, loading } = useProduct(id);
   const { categories } = useCategories();
   const { settings } = useSiteSettings();
+  const [prevId, setPrevId] = useState(id);
   const [currentImage, setCurrentImage] = useState(0);
+  if (prevId !== id) {
+    setPrevId(id);
+    setCurrentImage(0);
+  }
 
   const images = useMemo(() => {
     if (!product) return [];
@@ -24,10 +29,6 @@ export function ProductDetailPage({ id, onNavigate }: ProductDetailPageProps) {
         : [];
     return Array.from(new Set(paths)).filter(Boolean);
   }, [product]);
-
-  useEffect(() => {
-    setCurrentImage(0);
-  }, [id]);
 
   const currentImageUrl = images.length > 0 ? getPublicUrl(images[currentImage]) : null;
 

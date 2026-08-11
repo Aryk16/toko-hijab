@@ -12,10 +12,15 @@ export function AdminEvents() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<EventItem | null>(null);
 
-  async function load() {
-    const { data } = await supabase.from('events').select('*').order('event_date', { ascending: false });
-    if (data) setEvents(data);
-    setLoading(false);
+  function load() {
+    supabase
+      .from('events')
+      .select('*')
+      .order('event_date', { ascending: false })
+      .then(({ data }) => {
+        if (data) setEvents(data);
+        setLoading(false);
+      });
   }
 
   useEffect(() => {

@@ -17,14 +17,15 @@ export function AdminProducts() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  async function load() {
-    const [p, c] = await Promise.all([
+  function load() {
+    Promise.all([
       supabase.from('products').select('*').order('created_at', { ascending: false }),
       supabase.from('categories').select('*').order('sort_order', { ascending: true }),
-    ]);
-    if (p.data) setProducts(p.data);
-    if (c.data) setCategories(c.data);
-    setLoading(false);
+    ]).then(([p, c]) => {
+      if (p.data) setProducts(p.data);
+      if (c.data) setCategories(c.data);
+      setLoading(false);
+    });
   }
 
   useEffect(() => {

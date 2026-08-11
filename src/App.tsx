@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { AuthProvider, useAuth } from '@/lib/auth';
+import { AuthProvider } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-context';
 import { StoreLayout } from '@/components/StoreLayout';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { HomePage } from '@/pages/HomePage';
