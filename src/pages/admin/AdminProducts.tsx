@@ -16,6 +16,7 @@ export function AdminProducts() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [filterCategory, setFilterCategory] = useState('');
 
   function load() {
     Promise.all([
@@ -77,37 +78,61 @@ export function AdminProducts() {
     load();
   };
 
+  const filteredProducts = filterCategory
+    ? products.filter((p) => p.category_id === filterCategory)
+    : products;
+  const activeCategory = categories.find((c) => c.id === filterCategory);
+
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="font-serif text-2xl font-bold text-primary-900">Kelola Produk</h2>
-          <p className="mt-1 text-sm text-primary-600">{products.length} produk total</p>
+          <p className="mt-1 text-sm text-primary-600">
+            {activeCategory
+              ? `${filteredProducts.length} produk di kategori ${activeCategory.name}`
+              : `${products.length} produk total`}
+          </p>
         </div>
-        <button
-          onClick={() => {
-            setEditing(null);
-            setShowForm(true);
-          }}
-          className="btn-primary"
-        >
-          <Plus size={18} /> Tambah Produk
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="input-field w-auto"
+            aria-label="Filter berdasarkan kategori"
+          >
+            <option value="">Semua Kategori</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+          <button
+            onClick={() => {
+              setEditing(null);
+              setShowForm(true);
+            }}
+            className="btn-primary"
+          >
+            <Plus size={18} /> Tambah Produk
+          </button>
+        </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20">
           <Loader2 size={32} className="animate-spin text-primary-400" />
         </div>
-      ) : products.length === 0 ? (
+      ) : filteredProducts.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-primary-200 py-20 text-center">
           <Package size={48} className="text-primary-300" />
-          <p className="mt-4 text-lg font-medium text-primary-700">Belum ada produk.</p>
+          <p className="mt-4 text-lg font-medium text-primary-700">
+            {filterCategory ? 'Belum ada produk di kategori ini.' : 'Belum ada produk.'}
+          </p>
           <p className="mt-1 text-sm text-primary-500">Klik "Tambah Produk" untuk mulai.</p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((p) => {
+          {filteredProducts.map((p) => {
             const url = getPublicUrl(p.image_path);
             const hasSale = p.sale_price != null && p.sale_price > 0 && p.sale_price < p.price;
             return (
@@ -189,6 +214,7 @@ export function AdminProducts() {
         <ProductForm
           product={editing}
           categories={categories}
+          defaultCategoryId={editing ? undefined : filterCategory}
           onClose={() => {
             setShowForm(false);
             setEditing(null);
@@ -203,16 +229,17 @@ export function AdminProducts() {
 interface ProductFormProps {
   product: Product | null;
   categories: Category[];
+  defaultCategoryId?: string;
   onClose: () => void;
   onSave: (data: Partial<Product>) => Promise<void>;
 }
 
-function ProductForm({ product, categories, onClose, onSave }: ProductFormProps) {
+function ProductForm({ product, categories, defaultCategoryId, onClose, onSave }: ProductFormProps) {
   const [name, setName] = useState(product?.name ?? '');
   const [description, setDescription] = useState(product?.description ?? '');
   const [price, setPrice] = useState(product?.price?.toString() ?? '');
   const [salePrice, setSalePrice] = useState(product?.sale_price?.toString() ?? '');
-  const [categoryId, setCategoryId] = useState(product?.category_id ?? '');
+  const [categoryId, setCategoryId] = useState(product?.category_id ?? defaultCategoryId ?? '');
   const [shopeeUrl, setShopeeUrl] = useState(product?.shopee_url ?? '');
   const [isSoldOut, setIsSoldOut] = useState(product?.is_sold_out ?? false);
   const [isFeatured, setIsFeatured] = useState(product?.is_featured ?? false);
