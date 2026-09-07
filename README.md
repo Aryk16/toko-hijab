@@ -2,7 +2,7 @@
 
 Toko online hijab & fashion muslimah (segala jenis kerudung / hijab segi empat) dengan **storefront** untuk pembeli dan **admin dashboard** untuk mengelola katalog, promosi, dan pengaturan toko.
 
-Live di GitHub Pages: <https://aryk16.github.io/toko-hijab/>
+Live di <https://xavierboutique.my.id>
 
 ---
 
@@ -165,4 +165,4 @@ Catatan:
 
 ## 📄 Lisensi
 
-Properti milik Xavier Fashion Boutique's. Penggunaan internal / demo.
+Properti milik Xavier Fashion Boutique's.
